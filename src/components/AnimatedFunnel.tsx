@@ -1,41 +1,77 @@
-import React, { useEffect, useState } from "react";
-import AnimatedFunnel from "./components/AnimatedFunnel";
+import React from "react";
+import { motion } from "framer-motion";
 
-function App() {
-  const [visitors, setVisitors] = useState(5000);
-  const [mqlRate, setMqlRate] = useState(4);
-  const [customerRate, setCustomerRate] = useState(10);
-  const [uplift, setUplift] = useState(15);
-
-  useEffect(() => {
-    const searchParams = new URLSearchParams(window.location.search);
-    setVisitors(parseInt(searchParams.get("visitors") || "5000", 10));
-    setMqlRate(parseFloat(searchParams.get("mql") || "4"));
-    setCustomerRate(parseFloat(searchParams.get("close") || "10"));
-    setUplift(parseFloat(searchParams.get("uplift") || "15"));
-  }, []);
-
-  // Dynamically adjust width ratios for visual funnel effect
-  const leadScale = (mqlRate * (1 + uplift / 100)) / 100;
-  const customerScale = (leadScale * customerRate * (1 + uplift / 100)) / 100;
-
-  const maxWidth = 320;
-  const leadWidth = Math.max(leadScale * maxWidth, 10);
-  const customerWidth = Math.max(customerScale * maxWidth, 10);
-
-  return (
-    <div className="min-h-screen bg-white p-8">
-      <h1 className="text-3xl font-bold mb-6">Scribology ROI Funnel</h1>
-      <AnimatedFunnel
-        visitors={visitors}
-        mqlRate={mqlRate}
-        customerRate={customerRate}
-        uplift={uplift}
-        leadWidth={leadWidth}
-        customerWidth={customerWidth}
-      />
-    </div>
-  );
+interface FunnelProps {
+  visitors: number;
+  mqlRate: number;
+  customerRate: number;
+  uplift: number;
+  leadWidth: number;       // ← new
+  customerWidth: number;   // ← new
 }
 
-export default App;
+const AnimatedFunnel: React.FC<FunnelProps> = ({
+  visitors,
+  mqlRate,
+  customerRate,
+  uplift,
+  leadWidth,
+  customerWidth,
+}) => {
+  // derived counts (after uplift) – purely for the labels
+  const baselineLeads      = visitors * (mqlRate / 100);
+  const baselineCustomers  = baselineLeads * (customerRate / 100);
+  const upliftFactor       = 1 + uplift / 100;
+  const leadsAfterUplift   = baselineLeads     * upliftFactor;
+  const custsAfterUplift   = baselineCustomers * upliftFactor;
+
+  return (
+    <div className="flex flex-col items-center gap-6 w-full max-w-xl mx-auto p-6">
+      {/* Visitors (static full-width) */}
+      <div className="w-full flex flex-col items-center">
+        <div className="text-sm mb-1">Visitors</div>
+        <div className="bg-gray-200 h-8 w-full rounded-full relative overflow-hidden">
+          <div className="absolute inset-0 flex justify-center items-center text-xs font-semibold">
+            {visitors.toLocaleString()} / mo
+          </div>
+        </div>
+      </div>
+
+      {/* Leads – scaled */}
+      <div className="w-full flex flex-col items-center">
+        <div className="text-sm mb-1">Leads</div>
+        <div className="bg-gray-100 h-8 w-full rounded-full relative overflow-hidden flex items-center">
+          <motion.div
+            className="bg-red-600 h-full rounded-r-full flex items-center justify-center text-white text-xs font-semibold pl-2"
+            initial={{ width: 0 }}
+            animate={{ width: leadWidth }}
+            transition={{ type: "spring", stiffness: 120, damping: 20 }}
+          >
+            {Math.round(leadsAfterUplift).toLocaleString()}
+          </motion.div>
+        </div>
+      </div>
+
+      {/* Customers – further scaled */}
+      <div className="w-full flex flex-col items-center">
+        <div className="text-sm mb-1">Customers</div>
+        <div className="bg-gray-100 h-8 w-full rounded-full relative overflow-hidden flex items-center">
+          <motion.div
+            className="bg-green-600 h-full rounded-r-full flex items-center justify-center text-white text-xs font-semibold pl-2"
+            initial={{ width: 0 }}
+            animate={{ width: customerWidth }}
+            transition={{ type: "spring", stiffness: 120, damping: 20, delay: 0.1 }}
+          >
+            {Math.round(custsAfterUplift).toLocaleString()}
+          </motion.div>
+        </div>
+      </div>
+
+      <p className="text-center text-sm text-gray-600 mt-4">
+        Uplift of <span className="font-medium">{uplift}%</span> applied to both conversion stages
+      </p>
+    </div>
+  );
+};
+
+export default AnimatedFunnel;
