@@ -6,8 +6,8 @@ interface FunnelProps {
   mqlRate: number;
   customerRate: number;
   uplift: number;
-  leadWidth: number;       // ← new
-  customerWidth: number;   // ← new
+  leadWidth: number;
+  customerWidth: number;
 }
 
 const AnimatedFunnel: React.FC<FunnelProps> = ({
@@ -18,16 +18,18 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
   leadWidth,
   customerWidth,
 }) => {
-  // derived counts (after uplift) – purely for the labels
-  const baselineLeads      = visitors * (mqlRate / 100);
-  const baselineCustomers  = baselineLeads * (customerRate / 100);
-  const upliftFactor       = 1 + uplift / 100;
-  const leadsAfterUplift   = baselineLeads     * upliftFactor;
-  const custsAfterUplift   = baselineCustomers * upliftFactor;
+  // Calculate uplifted lead and customer counts for labels
+  const baselineLeads = visitors * (mqlRate / 100);
+  const baselineCustomers = baselineLeads * (customerRate / 100);
+  const upliftFactor = 1 + uplift / 100;
+  const upliftLeads = baselineLeads * upliftFactor;
+  const upliftCustomers = baselineCustomers * upliftFactor;
 
   return (
     <div className="flex flex-col items-center gap-6 w-full max-w-xl mx-auto p-6">
-      {/* Visitors (static full-width) */}
+      <h2 className="text-2xl font-bold">Animated Conversion Funnel</h2>
+
+      {/* Visitors */}
       <div className="w-full flex flex-col items-center">
         <div className="text-sm mb-1">Visitors</div>
         <div className="bg-gray-200 h-8 w-full rounded-full relative overflow-hidden">
@@ -37,7 +39,7 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
         </div>
       </div>
 
-      {/* Leads – scaled */}
+      {/* Leads */}
       <div className="w-full flex flex-col items-center">
         <div className="text-sm mb-1">Leads</div>
         <div className="bg-gray-100 h-8 w-full rounded-full relative overflow-hidden flex items-center">
@@ -47,12 +49,12 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
             animate={{ width: leadWidth }}
             transition={{ type: "spring", stiffness: 120, damping: 20 }}
           >
-            {Math.round(leadsAfterUplift).toLocaleString()}
+            {Math.round(upliftLeads).toLocaleString()}
           </motion.div>
         </div>
       </div>
 
-      {/* Customers – further scaled */}
+      {/* Customers */}
       <div className="w-full flex flex-col items-center">
         <div className="text-sm mb-1">Customers</div>
         <div className="bg-gray-100 h-8 w-full rounded-full relative overflow-hidden flex items-center">
@@ -62,7 +64,7 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
             animate={{ width: customerWidth }}
             transition={{ type: "spring", stiffness: 120, damping: 20, delay: 0.1 }}
           >
-            {Math.round(custsAfterUplift).toLocaleString()}
+            {Math.round(upliftCustomers).toLocaleString()}
           </motion.div>
         </div>
       </div>
