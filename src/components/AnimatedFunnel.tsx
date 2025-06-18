@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import React from "react";
 import AnimatedFunnel from "./components/AnimatedFunnel";
 
 function App() {
-  const [searchParams] = useSearchParams();
+  const searchParams = new URLSearchParams(window.location.search);
 
   const visitors = parseInt(searchParams.get("visitors") || "5000", 10);
   const mqlRate = parseFloat(searchParams.get("mql") || "4");
