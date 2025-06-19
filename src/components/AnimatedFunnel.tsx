@@ -27,11 +27,9 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
   const leadBasePct = upliftLeads > 0 ? baselineLeads / upliftLeads : 0;
   const custBasePct = upliftCustomers > 0 ? baselineCustomers / upliftCustomers : 0;
 
-  // hover state
   const [hoverLeads, setHoverLeads] = useState(false);
-  const [hoverCust, setHoverCust]   = useState(false);
+  const [hoverCust, setHoverCust] = useState(false);
 
-  // export helper
   const exportImage = async () => {
     if (funnelRef.current) {
       const canvas = await html2canvas(funnelRef.current);
@@ -44,13 +42,6 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
 
   return (
     <div className="flex flex-col items-center gap-8 w-full max-w-5xl mx-auto p-6">
-      <button
-        className="mb-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-        onClick={exportImage}
-      >
-        Export as Image
-      </button>
-
       <div ref={funnelRef} className="flex flex-col items-center gap-8 w-full">
         {/* Visitors */}
         <div className="w-full flex flex-col items-center">
@@ -81,7 +72,7 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
             </motion.div>
             {/* uplift */}
             <motion.div
-              className="bg-red-600 h-full flex items-center justify-center text-white text-xs font-semibold rounded-r-full"
+              className="bg-[#C8102E] h-full flex items-center justify-center text-white text-xs font-semibold rounded-r-full"
               style={{ width: `${(1 - leadBasePct) * 100}%` }}
               initial={{ width: 0 }}
               animate={{ width: `${(1 - leadBasePct) * 100}%` }}
@@ -91,7 +82,7 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
             </motion.div>
 
             {hoverLeads && (
-              <div className="absolute -top-10 right-0 bg-white px-1 rounded shadow text-red-600 text-xs pointer-events-none">
+              <div className="absolute -top-10 right-0 bg-white px-1 rounded shadow text-[#C8102E] text-xs pointer-events-none">
                 +{Math.round(uplift)}% Scribology Effect
               </div>
             )}
@@ -119,7 +110,7 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
             </motion.div>
             {/* uplift */}
             <motion.div
-              className="bg-red-600 h-full flex items-center justify-center text-white text-xs font-semibold rounded-r-full"
+              className="bg-[#C8102E] h-full flex items-center justify-center text-white text-xs font-semibold rounded-r-full"
               style={{ width: `${(1 - custBasePct) * 100}%` }}
               initial={{ width: 0 }}
               animate={{ width: `${(1 - custBasePct) * 100}%` }}
@@ -129,13 +120,21 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
             </motion.div>
 
             {hoverCust && (
-              <div className="absolute -top-10 right-0 bg-white px-1 rounded shadow text-red-600 text-xs pointer-events-none">
+              <div className="absolute -top-10 right-0 bg-white px-1 rounded shadow text-[#C8102E] text-xs pointer-events-none">
                 +{Math.round(uplift)}% Scribology Effect
               </div>
             )}
           </div>
         </div>
       </div>
+
+      {/* Export Button at Bottom */}
+      <button
+        onClick={exportImage}
+        className="mt-4 px-3 py-1 border border-gray-400 text-sm rounded hover:bg-blue-600 hover:text-white"
+      >
+        Export as Image
+      </button>
     </div>
   );
 };
