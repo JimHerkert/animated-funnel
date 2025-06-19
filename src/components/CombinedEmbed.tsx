@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import AnimatedFunnel from "./AnimatedFunnel";
 
-/** Shape of messages sent from ConvertCalculator */
 interface FunnelMsg {
   type: "UPDATE_FUNNEL";
   monthlyVisitors?: number;
@@ -12,7 +11,6 @@ interface FunnelMsg {
 }
 
 const CombinedEmbed: React.FC = () => {
-  /* ---------- STATE fed by postMessage ---------- */
   const [data, setData] = useState({
     visitors: 5000,
     mql: 4,
@@ -21,32 +19,33 @@ const CombinedEmbed: React.FC = () => {
     life: 5,
   });
 
-  /* ---------- Inject calculator script once ---------- */
+  // Inject ConvertCalculator embed.js script
   useEffect(() => {
-    const s = document.createElement("script");
-    s.src = "https://scripts.convertcalculator.com/embed.js";
-    s.async = true;
-    document.body.appendChild(s);
+    const script = document.createElement("script");
+    script.src = "https://scripts.convertcalculator.com/embed.js";
+    script.async = true;
+    document.body.appendChild(script);
   }, []);
 
-  /* ---------- Listen for postMessage events ---------- */
+  // Listen for messages from ConvertCalculator
   useEffect(() => {
     const handler = (e: MessageEvent<FunnelMsg>) => {
       if (e.data?.type === "UPDATE_FUNNEL") {
-        setData((prev) => ({
-          visitors: e.data.monthlyVisitors ?? prev.visitors,
-          mql:      e.data.mql             ?? prev.mql,
-          close:    e.data.close           ?? prev.close,
-          uplift:   e.data.uplift          ?? prev.uplift,
-          life:     e.data.life            ?? prev.life,
-        }));
+        console.log("📥 received from calculator:", e.data); // <-- debug log
+        setData({
+          visitors: e.data.monthlyVisitors ?? data.visitors,
+          mql: e.data.mql ?? data.mql,
+          close: e.data.close ?? data.close,
+          uplift: e.data.uplift ?? data.uplift,
+          life: e.data.life ?? data.life,
+        });
       }
     };
     window.addEventListener("message", handler);
     return () => window.removeEventListener("message", handler);
-  }, []);
+  }, [data]);
 
-  /* ---------- Derived funnel numbers ---------- */
+  // Derived values
   const baseLeads = data.visitors * (data.mql / 100);
   const upliftLeads = baseLeads * (1 + data.uplift / 100);
   const baseCust = baseLeads * (data.close / 100);
@@ -66,7 +65,7 @@ const CombinedEmbed: React.FC = () => {
           ></div>
         </div>
 
-        {/* RIGHT – Live Funnel */}
+        {/* RIGHT – Animated Funnel */}
         <div className="flex-1 border p-4 rounded shadow">
           <AnimatedFunnel
             visitors={data.visitors}
