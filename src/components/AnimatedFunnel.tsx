@@ -66,7 +66,7 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
             onMouseLeave={() => setHoverLeads(false)}
           >
             <motion.div
-              className="bg-gray-300 h-full flex items-center justify-center text-gray-900 text-xs font-semibold"
+              className="bg-gray-300 h-full flex items-center justify-center text-gray-900 text-xs font-semibold rounded-full"
               style={{ width: `${leadBasePct * 100}%` }}
               initial={{ width: 0 }}
               animate={{ width: `${leadBasePct * 100}%` }}
@@ -75,7 +75,7 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
               {fmt(baselineLeads)}
             </motion.div>
             <motion.div
-              className="bg-red-600 h-full flex items-center justify-center text-white text-xs font-semibold"
+              className="bg-red-600 h-full flex items-center justify-center text-white text-xs font-semibold rounded-full"
               style={{ width: `${(1 - leadBasePct) * 100}%` }}
               initial={{ width: 0 }}
               animate={{ width: `${(1 - leadBasePct) * 100}%` }}
@@ -84,7 +84,7 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
               +{fmt(upliftLeads - baselineLeads)}
             </motion.div>
             {hoverLeads && (
-              <div className="absolute -top-6 left-1/2 -translate-x-1/2 text-red-600 text-xs font-medium pointer-events-none">
+              <div className="absolute -top-10 left-1/2 -translate-x-1/2 text-red-600 text-xs font-medium pointer-events-none bg-white px-1 rounded shadow">
                 +{Math.round(uplift)}% uplift
               </div>
             )}
