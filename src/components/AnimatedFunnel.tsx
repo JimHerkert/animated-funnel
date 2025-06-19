@@ -4,8 +4,8 @@ import { motion } from "framer-motion";
 interface FunnelProps {
   visitors: number;
   uplift: number;
-  leadWidth: number;         // px (67 % of Visitors)
-  customerWidth: number;     // px (67 % of Leads)
+  leadWidth: number;
+  customerWidth: number;
   baselineLeads: number;
   upliftLeads: number;
   baselineCustomers: number;
@@ -15,8 +15,6 @@ interface FunnelProps {
 const AnimatedFunnel: React.FC<FunnelProps> = ({
   visitors,
   uplift,
-  leadWidth,
-  customerWidth,
   baselineLeads,
   upliftLeads,
   baselineCustomers,
@@ -24,9 +22,13 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
 }) => {
   const fmt = (n: number) => Math.round(n).toLocaleString();
 
-  // proportions for segmented bars
+  // --- percentage splits for leads ---
   const leadBasePct = baselineLeads / upliftLeads;
+  const leadAddPct  = 1 - leadBasePct;
+
+  // --- percentage splits for customers ---
   const custBasePct = baselineCustomers / upliftCustomers;
+  const custAddPct  = 1 - custBasePct;
 
   return (
     <div className="flex flex-col items-center gap-6 w-full max-w-xl mx-auto p-6">
@@ -39,14 +41,11 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
       </div>
 
       {/* Leads */}
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col items-center w-2/3">
         <div className="text-sm mb-1">Leads</div>
-        <div
-          className="bg-gray-100 h-8 rounded-full overflow-hidden flex items-center"
-          style={{ width: `${leadWidth}px` }}
-        >
+        <div className="bg-gray-100 h-8 w-full rounded-full overflow-hidden flex items-center">
           <motion.div
-            className="bg-gray-300 h-full flex items-center justify-center text-gray-900 text-xs font-semibold px-2"
+            className="bg-gray-300 h-full flex items-center justify-center text-gray-900 text-xs font-semibold"
             style={{ width: `${leadBasePct * 100}%` }}
             initial={{ width: 0 }}
             animate={{ width: `${leadBasePct * 100}%` }}
@@ -55,10 +54,10 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
             {fmt(baselineLeads)}
           </motion.div>
           <motion.div
-            className="bg-red-600 h-full flex items-center justify-center text-white text-xs font-semibold px-2"
-            style={{ width: `${(1 - leadBasePct) * 100}%` }}
+            className="bg-red-600 h-full flex items-center justify-center text-white text-xs font-semibold"
+            style={{ width: `${leadAddPct * 100}%` }}
             initial={{ width: 0 }}
-            animate={{ width: `${(1 - leadBasePct) * 100}%` }}
+            animate={{ width: `${leadAddPct * 100}%` }}
             transition={{ type: "spring", stiffness: 120, damping: 20 }}
           >
             +{fmt(upliftLeads - baselineLeads)}
@@ -67,14 +66,11 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
       </div>
 
       {/* Customers */}
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col items-center w-[44.89%]">
         <div className="text-sm mb-1">Customers</div>
-        <div
-          className="bg-gray-100 h-8 rounded-full overflow-hidden flex items-center"
-          style={{ width: `${customerWidth}px` }}
-        >
+        <div className="bg-gray-100 h-8 w-full rounded-full overflow-hidden flex items-center">
           <motion.div
-            className="bg-gray-300 h-full flex items-center justify-center text-gray-900 text-xs font-semibold px-2"
+            className="bg-gray-300 h-full flex items-center justify-center text-gray-900 text-xs font-semibold"
             style={{ width: `${custBasePct * 100}%` }}
             initial={{ width: 0 }}
             animate={{ width: `${custBasePct * 100}%` }}
@@ -83,10 +79,10 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
             {fmt(baselineCustomers)}
           </motion.div>
           <motion.div
-            className="bg-green-600 h-full flex items-center justify-center text-white text-xs font-semibold px-2"
-            style={{ width: `${(1 - custBasePct) * 100}%` }}
+            className="bg-green-600 h-full flex items-center justify-center text-white text-xs font-semibold"
+            style={{ width: `${custAddPct * 100}%` }}
             initial={{ width: 0 }}
-            animate={{ width: `${(1 - custBasePct) * 100}%` }}
+            animate={{ width: `${custAddPct * 100}%` }}
             transition={{ type: "spring", stiffness: 120, damping: 20, delay: 0.1 }}
           >
             +{fmt(upliftCustomers - baselineCustomers)}
