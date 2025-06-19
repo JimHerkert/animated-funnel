@@ -3,11 +3,15 @@ import { motion } from "framer-motion";
 
 interface FunnelProps {
   visitors: number;
-  mqlRate: number;
-  customerRate: number;
+
+  // uplift percentages
   uplift: number;
+
+  // pre-computed widths (px) sent from App.tsx
   leadWidth: number;
   customerWidth: number;
+
+  // counts for labels
   baselineLeads: number;
   upliftLeads: number;
   baselineCustomers: number;
@@ -28,7 +32,7 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
 
   return (
     <div className="flex flex-col items-center gap-6 w-full max-w-xl mx-auto p-6">
-      {/* Visitors */}
+      {/* Visitors (100 % width) */}
       <div className="w-full flex flex-col items-center">
         <div className="text-sm mb-1">Visitors</div>
         <div className="bg-gray-200 h-8 w-full rounded-full flex items-center justify-center text-xs font-semibold">
@@ -36,13 +40,14 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
         </div>
       </div>
 
-      {/* Leads */}
+      {/* Leads (67 % width) */}
       <div className="flex flex-col items-center">
         <div className="text-sm mb-1">Leads</div>
         <div
           className="bg-gray-100 h-8 rounded-full overflow-hidden flex items-center"
           style={{ width: `${leadWidth}px` }}
         >
+          {/* baseline */}
           <motion.div
             className="bg-gray-300 h-full flex items-center justify-center text-gray-900 text-xs font-semibold px-2"
             initial={{ width: 0 }}
@@ -51,6 +56,7 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
           >
             {fmt(baselineLeads)}
           </motion.div>
+          {/* uplift */}
           <motion.div
             className="bg-red-600 h-full flex items-center justify-center text-white text-xs font-semibold px-2"
             initial={{ width: 0 }}
@@ -62,13 +68,14 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
         </div>
       </div>
 
-      {/* Customers */}
+      {/* Customers (67 % of Leads) */}
       <div className="flex flex-col items-center">
         <div className="text-sm mb-1">Customers</div>
         <div
           className="bg-gray-100 h-8 rounded-full overflow-hidden flex items-center"
           style={{ width: `${customerWidth}px` }}
         >
+          {/* baseline */}
           <motion.div
             className="bg-gray-300 h-full flex items-center justify-center text-gray-900 text-xs font-semibold px-2"
             initial={{ width: 0 }}
@@ -77,6 +84,7 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
           >
             {fmt(baselineCustomers)}
           </motion.div>
+          {/* uplift */}
           <motion.div
             className="bg-green-600 h-full flex items-center justify-center text-white text-xs font-semibold px-2"
             initial={{ width: 0 }}
