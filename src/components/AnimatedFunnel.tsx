@@ -47,7 +47,7 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
         <div className="text-sm mb-1">Leads</div>
         <div
           className="bg-gray-100 h-8 rounded-full overflow-hidden flex items-center"
-          style={{ width: `${visitors * 0.67}px` }}
+          style={{ width: `${Math.min(visitors * 0.67, 600)}px` }}
         >
           {/* baseline seg */}
           <motion.div
@@ -77,7 +77,7 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
         <div className="text-sm mb-1">Customers</div>
         <div
           className="bg-gray-100 h-8 rounded-full overflow-hidden flex items-center"
-          style={{ width: `${visitors * 0.67 * 0.67}px` }}
+          style={{ width: `${Math.min(visitors * 0.67 * 0.67, 400)}px` }}
         >
           {/* baseline seg */}
           <motion.div
