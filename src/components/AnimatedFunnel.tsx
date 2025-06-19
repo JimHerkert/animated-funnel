@@ -24,7 +24,7 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
   baselineCustomers,
   upliftCustomers,
 }) => {
-  const format = (n: number) => Math.round(n).toLocaleString();
+  const fmt = (n: number) => Math.round(n).toLocaleString();
 
   return (
     <div className="flex flex-col items-center gap-6 w-full max-w-xl mx-auto p-6">
@@ -32,15 +32,15 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
       <div className="w-full flex flex-col items-center">
         <div className="text-sm mb-1">Visitors</div>
         <div className="bg-gray-200 h-8 w-full rounded-full flex items-center justify-center text-xs font-semibold">
-          {format(visitors)} / mo
+          {fmt(visitors)} / mo
         </div>
       </div>
 
       {/* Leads */}
-      <div className="flex flex-col items-center w-full">
+      <div className="flex flex-col items-center">
         <div className="text-sm mb-1">Leads</div>
         <div
-          className="bg-gray-100 h-8 rounded-full relative overflow-hidden flex items-center"
+          className="bg-gray-100 h-8 rounded-full overflow-hidden flex items-center"
           style={{ width: `${leadWidth}px` }}
         >
           <motion.div
@@ -49,7 +49,7 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
             animate={{ width: "100%" }}
             transition={{ type: "spring", stiffness: 120, damping: 20 }}
           >
-            {format(baselineLeads)}
+            {fmt(baselineLeads)}
           </motion.div>
           <motion.div
             className="bg-red-600 h-full flex items-center justify-center text-white text-xs font-semibold px-2"
@@ -57,16 +57,16 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
             animate={{ width: "100%" }}
             transition={{ type: "spring", stiffness: 120, damping: 20 }}
           >
-            +{format(upliftLeads - baselineLeads)}
+            +{fmt(upliftLeads - baselineLeads)}
           </motion.div>
         </div>
       </div>
 
       {/* Customers */}
-      <div className="flex flex-col items-center w-full">
+      <div className="flex flex-col items-center">
         <div className="text-sm mb-1">Customers</div>
         <div
-          className="bg-gray-100 h-8 rounded-full relative overflow-hidden flex items-center"
+          className="bg-gray-100 h-8 rounded-full overflow-hidden flex items-center"
           style={{ width: `${customerWidth}px` }}
         >
           <motion.div
@@ -75,7 +75,7 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
             animate={{ width: "100%" }}
             transition={{ type: "spring", stiffness: 120, damping: 20, delay: 0.1 }}
           >
-            {format(baselineCustomers)}
+            {fmt(baselineCustomers)}
           </motion.div>
           <motion.div
             className="bg-green-600 h-full flex items-center justify-center text-white text-xs font-semibold px-2"
@@ -83,7 +83,7 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
             animate={{ width: "100%" }}
             transition={{ type: "spring", stiffness: 120, damping: 20, delay: 0.1 }}
           >
-            +{format(upliftCustomers - baselineCustomers)}
+            +{fmt(upliftCustomers - baselineCustomers)}
           </motion.div>
         </div>
       </div>
