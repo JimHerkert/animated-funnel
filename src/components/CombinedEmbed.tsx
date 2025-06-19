@@ -1,4 +1,3 @@
-// src/components/CombinedEmbed.tsx
 import React, { useEffect } from "react";
 
 const CombinedEmbed: React.FC = () => {
@@ -26,7 +25,7 @@ const CombinedEmbed: React.FC = () => {
         {/* Animated Funnel RIGHT */}
         <div className="flex-1 border p-4 rounded shadow">
           <iframe
-            src="https://animated-funnel-1t44.vercel.app"
+            src="https://animated-funnel-1t44.vercel.app?visitors=5000&mql=4&close=10&uplift=15&life=5"
             title="Animated Funnel"
             width="100%"
             height="600"
