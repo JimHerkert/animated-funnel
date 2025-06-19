@@ -24,8 +24,7 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
   baselineCustomers,
   upliftCustomers,
 }) => {
-  // Helper: format # with thousands-separator
-  const f = (n: number) => n.toLocaleString();
+  const format = (n: number) => Math.round(n).toLocaleString();
 
   return (
     <div className="flex flex-col items-center gap-6 w-full max-w-xl mx-auto p-6">
@@ -34,7 +33,7 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
         <div className="text-sm mb-1">Visitors</div>
         <div className="bg-gray-200 h-8 w-full rounded-full relative overflow-hidden">
           <div className="absolute inset-0 flex justify-center items-center text-xs font-semibold">
-            {f(visitors)} / mo
+            {format(visitors)} / mo
           </div>
         </div>
       </div>
@@ -43,23 +42,21 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
       <div className="w-full flex flex-col items-center">
         <div className="text-sm mb-1">Leads</div>
         <div className="bg-gray-100 h-8 w-full rounded-full relative overflow-hidden flex items-center">
-          {/* baseline (neutral) */}
           <motion.div
-            className="bg-gray-300 h-full rounded-r-full flex items-center justify-center text-gray-800 text-xs font-semibold pl-2"
+            className="bg-gray-300 h-full rounded-r-full flex items-center justify-center text-gray-900 text-xs font-semibold px-2"
             initial={{ width: 0 }}
             animate={{ width: leadWidth }}
             transition={{ type: "spring", stiffness: 120, damping: 20 }}
           >
-            {f(baselineLeads)}
+            {format(baselineLeads)}
           </motion.div>
-          {/* uplift overlay */}
           <motion.div
             className="bg-red-600 h-full rounded-r-full flex items-center justify-center text-white text-xs font-semibold px-2"
             initial={{ width: 0 }}
             animate={{ width: leadWidth }}
             transition={{ type: "spring", stiffness: 120, damping: 20 }}
           >
-            +{f(upliftLeads - baselineLeads)}
+            +{format(upliftLeads - baselineLeads)}
           </motion.div>
         </div>
       </div>
@@ -68,23 +65,21 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
       <div className="w-full flex flex-col items-center">
         <div className="text-sm mb-1">Customers</div>
         <div className="bg-gray-100 h-8 w-full rounded-full relative overflow-hidden flex items-center">
-          {/* baseline (neutral) */}
           <motion.div
-            className="bg-gray-300 h-full rounded-r-full flex items-center justify-center text-gray-800 text-xs font-semibold pl-2"
+            className="bg-gray-300 h-full rounded-r-full flex items-center justify-center text-gray-900 text-xs font-semibold px-2"
             initial={{ width: 0 }}
             animate={{ width: customerWidth }}
             transition={{ type: "spring", stiffness: 120, damping: 20, delay: 0.1 }}
           >
-            {f(baselineCustomers)}
+            {format(baselineCustomers)}
           </motion.div>
-          {/* uplift overlay */}
           <motion.div
             className="bg-green-600 h-full rounded-r-full flex items-center justify-center text-white text-xs font-semibold px-2"
             initial={{ width: 0 }}
             animate={{ width: customerWidth }}
             transition={{ type: "spring", stiffness: 120, damping: 20, delay: 0.1 }}
           >
-            +{f(upliftCustomers - baselineCustomers)}
+            +{format(upliftCustomers - baselineCustomers)}
           </motion.div>
         </div>
       </div>
