@@ -9,7 +9,8 @@ interface FunnelProps {
   upliftLeads: number;
   baselineCustomers: number;
   upliftCustomers: number;
-  suffix: string;
+  suffix?: string;
+  usefulLife?: number; // for lifetime multiplier
 }
 
 const AnimatedFunnel: React.FC<FunnelProps> = ({
@@ -19,48 +20,75 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
   upliftLeads,
   baselineCustomers,
   upliftCustomers,
-  suffix,
+  suffix = "/ mo",
+  usefulLife = 5,
 }) => {
   const fmt = (n: number) => Math.round(n).toLocaleString();
   const funnelRef = useRef<HTMLDivElement>(null);
 
-  const leadBasePct = upliftLeads > 0 ? baselineLeads / upliftLeads : 0;
-  const custBasePct = upliftCustomers > 0 ? baselineCustomers / upliftCustomers : 0;
-
   const [hoverLeads, setHoverLeads] = useState(false);
-  const [hoverCust, setHoverCust] = useState(false);
+  const [hoverCustomers, setHoverCustomers] = useState(false);
+  const [view, setView] = useState<"month" | "year" | "lifetime">("month");
 
-  const exportImage = async () => {
+  const multiplier =
+    view === "month" ? 1 : view === "year" ? 12 : 12 * usefulLife;
+
+  const scaled = {
+    visitors: visitors * multiplier,
+    baseLeads: baselineLeads * multiplier,
+    upliftLeads: upliftLeads * multiplier,
+    baseCustomers: baselineCustomers * multiplier,
+    upliftCustomers: upliftCustomers * multiplier,
+  };
+
+  const leadBasePct = scaled.baseLeads / scaled.upliftLeads;
+  const custBasePct = scaled.baseCustomers / scaled.upliftCustomers;
+
+  const exportAsImage = async () => {
     if (funnelRef.current) {
       const canvas = await html2canvas(funnelRef.current);
-      const a = document.createElement("a");
-      a.download = "funnel.png";
-      a.href = canvas.toDataURL();
-      a.click();
+      const link = document.createElement("a");
+      link.download = "funnel.png";
+      link.href = canvas.toDataURL();
+      link.click();
     }
   };
 
   return (
-    <div className="flex flex-col items-center gap-8 w-full max-w-5xl mx-auto p-6">
+    <div className="flex flex-col items-center gap-6 w-full max-w-5xl mx-auto p-6">
+      {/* Toggle Buttons */}
+      <div className="flex gap-4 justify-center mb-2">
+        {["month", "year", "lifetime"].map((label) => (
+          <button
+            key={label}
+            onClick={() => setView(label as any)}
+            className={`px-4 py-1 border border-black rounded text-sm ${
+              view === label ? "bg-[#C8102E] text-white" : "bg-white text-black"
+            } hover:bg-[#C8102E] hover:text-white transition`}
+          >
+            {label[0].toUpperCase() + label.slice(1)}
+          </button>
+        ))}
+      </div>
+
       <div ref={funnelRef} className="flex flex-col items-center gap-8 w-full">
         {/* Visitors */}
         <div className="w-full flex flex-col items-center">
-          <div className="text-sm mb-1">{`Visitors ${suffix}`}</div>
+          <div className="text-sm mb-1">Visitors / {view}</div>
           <div className="bg-gray-200 h-8 w-full rounded-full flex items-center justify-center text-xs font-semibold">
-            {fmt(visitors)}
+            {fmt(scaled.visitors)}
           </div>
         </div>
 
         {/* Leads */}
         <div className="w-full flex flex-col items-center">
-          <div className="text-sm mb-1">{`Leads ${suffix}`}</div>
+          <div className="text-sm mb-1">Leads / {view}</div>
           <div
-            className="bg-gray-100 h-8 overflow-visible flex relative mx-auto"
+            className="bg-gray-100 h-8 overflow-visible flex items-center justify-start mx-auto relative"
             style={{ width: "67%" }}
             onMouseEnter={() => setHoverLeads(true)}
             onMouseLeave={() => setHoverLeads(false)}
           >
-            {/* baseline */}
             <motion.div
               className="bg-gray-300 h-full flex items-center justify-center text-gray-900 text-xs font-semibold rounded-l-full"
               style={{ width: `${leadBasePct * 100}%` }}
@@ -68,21 +96,19 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
               animate={{ width: `${leadBasePct * 100}%` }}
               transition={{ type: "spring", stiffness: 120, damping: 20 }}
             >
-              {fmt(baselineLeads)}
+              {fmt(scaled.baseLeads)}
             </motion.div>
-            {/* uplift */}
             <motion.div
-              className="bg-[#C8102E] h-full flex items-center justify-center text-white text-xs font-semibold rounded-r-full"
+              className="bg-red-600 h-full flex items-center justify-center text-white text-xs font-semibold rounded-r-full"
               style={{ width: `${(1 - leadBasePct) * 100}%` }}
               initial={{ width: 0 }}
               animate={{ width: `${(1 - leadBasePct) * 100}%` }}
               transition={{ type: "spring", stiffness: 120, damping: 20 }}
             >
-              +{fmt(upliftLeads - baselineLeads)}
+              +{fmt(scaled.upliftLeads - scaled.baseLeads)}
             </motion.div>
-
             {hoverLeads && (
-              <div className="absolute -top-10 right-0 bg-white px-1 rounded shadow text-[#C8102E] text-xs pointer-events-none">
+              <div className="absolute -top-10 right-0 text-red-600 text-xs font-medium pointer-events-none bg-white px-2 py-1 rounded shadow">
                 +{Math.round(uplift)}% Scribology Effect
               </div>
             )}
@@ -91,36 +117,33 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
 
         {/* Customers */}
         <div className="w-full flex flex-col items-center">
-          <div className="text-sm mb-1">{`Customers ${suffix}`}</div>
+          <div className="text-sm mb-1">Customers / {view}</div>
           <div
-            className="bg-gray-100 h-8 overflow-visible flex relative mx-auto"
+            className="bg-gray-100 h-8 overflow-visible flex items-center justify-start mx-auto relative"
             style={{ width: "44.89%" }}
-            onMouseEnter={() => setHoverCust(true)}
-            onMouseLeave={() => setHoverCust(false)}
+            onMouseEnter={() => setHoverCustomers(true)}
+            onMouseLeave={() => setHoverCustomers(false)}
           >
-            {/* baseline */}
             <motion.div
               className="bg-gray-300 h-full flex items-center justify-center text-gray-900 text-xs font-semibold rounded-l-full"
               style={{ width: `${custBasePct * 100}%` }}
               initial={{ width: 0 }}
               animate={{ width: `${custBasePct * 100}%` }}
-              transition={{ type: "spring", stiffness: 120, damping: 20, delay: 0.1 }}
+              transition={{ type: "spring", stiffness: 120, damping: 20 }}
             >
-              {fmt(baselineCustomers)}
+              {fmt(scaled.baseCustomers)}
             </motion.div>
-            {/* uplift */}
             <motion.div
-              className="bg-[#C8102E] h-full flex items-center justify-center text-white text-xs font-semibold rounded-r-full"
+              className="bg-red-600 h-full flex items-center justify-center text-white text-xs font-semibold rounded-r-full"
               style={{ width: `${(1 - custBasePct) * 100}%` }}
               initial={{ width: 0 }}
               animate={{ width: `${(1 - custBasePct) * 100}%` }}
-              transition={{ type: "spring", stiffness: 120, damping: 20, delay: 0.1 }}
+              transition={{ type: "spring", stiffness: 120, damping: 20 }}
             >
-              +{fmt(upliftCustomers - baselineCustomers)}
+              +{fmt(scaled.upliftCustomers - scaled.baseCustomers)}
             </motion.div>
-
-            {hoverCust && (
-              <div className="absolute -top-10 right-0 bg-white px-1 rounded shadow text-[#C8102E] text-xs pointer-events-none">
+            {hoverCustomers && (
+              <div className="absolute -top-10 right-0 text-red-600 text-xs font-medium pointer-events-none bg-white px-2 py-1 rounded shadow">
                 +{Math.round(uplift)}% Scribology Effect
               </div>
             )}
@@ -128,14 +151,13 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
         </div>
       </div>
 
-      {/* Export Button at Bottom */}
-     <button
-  onClick={exportImage}
-  className="mt-4 px-3 py-1 border border-black text-sm rounded bg-white text-black hover:bg-[#C8102E] hover:text-white hover:border-[#C8102E] transition-colors"
->
-  Export as Image
-</button>
-
+      {/* Export Button */}
+      <button
+        onClick={exportAsImage}
+        className="mt-6 px-4 py-1 border border-black rounded text-sm bg-white text-black hover:bg-[#C8102E] hover:text-white transition"
+      >
+        Export as Image
+      </button>
     </div>
   );
 };
