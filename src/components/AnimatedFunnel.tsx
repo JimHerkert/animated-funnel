@@ -144,11 +144,13 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
               +{fmt(scaled.upliftCustomers - scaled.baseCustomers)}
             </motion.div>
            {hoverCustomers && (
-  <div className="absolute -top-10 right-0 text-red-600 text-xs font-medium pointer-events-none bg-white px-2 py-1 rounded shadow">
+  <div
+    className="absolute -top-10 text-red-600 text-xs font-medium pointer-events-none bg-white px-2 py-1 rounded shadow"
+    style={{ left: `${custBasePct * 100}%` }}
+  >
     +{Math.round(uplift)}% Scribology Effect
   </div>
 )}
-
           </div>
         </div>
       </div>
