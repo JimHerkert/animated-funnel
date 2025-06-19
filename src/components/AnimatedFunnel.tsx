@@ -8,33 +8,33 @@ interface FunnelProps {
   uplift: number;
   leadWidth: number;
   customerWidth: number;
+  baselineLeads: number;
+  upliftLeads: number;
+  baselineCustomers: number;
+  upliftCustomers: number;
 }
 
 const AnimatedFunnel: React.FC<FunnelProps> = ({
   visitors,
-  mqlRate,
-  customerRate,
   uplift,
   leadWidth,
   customerWidth,
+  baselineLeads,
+  upliftLeads,
+  baselineCustomers,
+  upliftCustomers,
 }) => {
-  // Calculate uplifted lead and customer counts for labels
-  const baselineLeads = visitors * (mqlRate / 100);
-  const baselineCustomers = baselineLeads * (customerRate / 100);
-  const upliftFactor = 1 + uplift / 100;
-  const upliftLeads = baselineLeads * upliftFactor;
-  const upliftCustomers = baselineCustomers * upliftFactor;
+  // Helper: format # with thousands-separator
+  const f = (n: number) => n.toLocaleString();
 
   return (
     <div className="flex flex-col items-center gap-6 w-full max-w-xl mx-auto p-6">
-      <h2 className="text-2xl font-bold">Animated Conversion Funnel</h2>
-
       {/* Visitors */}
       <div className="w-full flex flex-col items-center">
         <div className="text-sm mb-1">Visitors</div>
         <div className="bg-gray-200 h-8 w-full rounded-full relative overflow-hidden">
           <div className="absolute inset-0 flex justify-center items-center text-xs font-semibold">
-            {visitors.toLocaleString()} / mo
+            {f(visitors)} / mo
           </div>
         </div>
       </div>
@@ -43,13 +43,23 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
       <div className="w-full flex flex-col items-center">
         <div className="text-sm mb-1">Leads</div>
         <div className="bg-gray-100 h-8 w-full rounded-full relative overflow-hidden flex items-center">
+          {/* baseline (neutral) */}
           <motion.div
-            className="bg-red-600 h-full rounded-r-full flex items-center justify-center text-white text-xs font-semibold pl-2"
+            className="bg-gray-300 h-full rounded-r-full flex items-center justify-center text-gray-800 text-xs font-semibold pl-2"
             initial={{ width: 0 }}
             animate={{ width: leadWidth }}
             transition={{ type: "spring", stiffness: 120, damping: 20 }}
           >
-            {Math.round(upliftLeads).toLocaleString()}
+            {f(baselineLeads)}
+          </motion.div>
+          {/* uplift overlay */}
+          <motion.div
+            className="bg-red-600 h-full rounded-r-full flex items-center justify-center text-white text-xs font-semibold px-2"
+            initial={{ width: 0 }}
+            animate={{ width: leadWidth }}
+            transition={{ type: "spring", stiffness: 120, damping: 20 }}
+          >
+            +{f(upliftLeads - baselineLeads)}
           </motion.div>
         </div>
       </div>
@@ -58,13 +68,23 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
       <div className="w-full flex flex-col items-center">
         <div className="text-sm mb-1">Customers</div>
         <div className="bg-gray-100 h-8 w-full rounded-full relative overflow-hidden flex items-center">
+          {/* baseline (neutral) */}
           <motion.div
-            className="bg-green-600 h-full rounded-r-full flex items-center justify-center text-white text-xs font-semibold pl-2"
+            className="bg-gray-300 h-full rounded-r-full flex items-center justify-center text-gray-800 text-xs font-semibold pl-2"
             initial={{ width: 0 }}
             animate={{ width: customerWidth }}
             transition={{ type: "spring", stiffness: 120, damping: 20, delay: 0.1 }}
           >
-            {Math.round(upliftCustomers).toLocaleString()}
+            {f(baselineCustomers)}
+          </motion.div>
+          {/* uplift overlay */}
+          <motion.div
+            className="bg-green-600 h-full rounded-r-full flex items-center justify-center text-white text-xs font-semibold px-2"
+            initial={{ width: 0 }}
+            animate={{ width: customerWidth }}
+            transition={{ type: "spring", stiffness: 120, damping: 20, delay: 0.1 }}
+          >
+            +{f(upliftCustomers - baselineCustomers)}
           </motion.div>
         </div>
       </div>
