@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import html2canvas from "html2canvas";
 
@@ -35,6 +35,9 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
     }
   };
 
+  const [hoverLeads, setHoverLeads] = useState(false);
+  const [hoverCustomers, setHoverCustomers] = useState(false);
+
   return (
     <div className="flex flex-col items-center gap-8 w-full max-w-5xl mx-auto p-6">
       <button
@@ -57,8 +60,10 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
         <div className="w-full flex flex-col items-center">
           <div className="text-sm mb-1">Leads</div>
           <div
-            className="bg-gray-100 h-8 rounded-full overflow-hidden flex items-center justify-start mx-auto relative group"
+            className="bg-gray-100 h-8 rounded-full overflow-hidden flex items-center justify-start mx-auto relative"
             style={{ width: "67%" }}
+            onMouseEnter={() => setHoverLeads(true)}
+            onMouseLeave={() => setHoverLeads(false)}
           >
             <motion.div
               className="bg-gray-300 h-full flex items-center justify-center text-gray-900 text-xs font-semibold"
@@ -77,9 +82,11 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
               transition={{ type: "spring", stiffness: 120, damping: 20 }}
             >
               +{fmt(upliftLeads - baselineLeads)}
-              <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-red-600 text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity">
-                +{Math.round(uplift)}% uplift
-              </span>
+              {hoverLeads && (
+                <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-red-600 text-xs font-medium">
+                  +{Math.round(uplift)}% uplift
+                </span>
+              )}
             </motion.div>
           </div>
         </div>
@@ -88,8 +95,10 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
         <div className="w-full flex flex-col items-center">
           <div className="text-sm mb-1">Customers</div>
           <div
-            className="bg-gray-100 h-8 rounded-full overflow-hidden flex items-center justify-start mx-auto relative group"
+            className="bg-gray-100 h-8 rounded-full overflow-hidden flex items-center justify-start mx-auto relative"
             style={{ width: "44.89%" }}
+            onMouseEnter={() => setHoverCustomers(true)}
+            onMouseLeave={() => setHoverCustomers(false)}
           >
             <motion.div
               className="bg-gray-300 h-full flex items-center justify-center text-gray-900 text-xs font-semibold"
@@ -108,9 +117,11 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
               transition={{ type: "spring", stiffness: 120, damping: 20, delay: 0.1 }}
             >
               +{fmt(upliftCustomers - baselineCustomers)}
-              <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-red-600 text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity">
-                +{Math.round(uplift)}% uplift
-              </span>
+              {hoverCustomers && (
+                <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-red-600 text-xs font-medium">
+                  +{Math.round(uplift)}% uplift
+                </span>
+              )}
             </motion.div>
           </div>
         </div>
