@@ -60,7 +60,7 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
         <div className="w-full flex flex-col items-center">
           <div className="text-sm mb-1">Leads</div>
           <div
-            className="bg-gray-100 h-8 rounded-full overflow-hidden flex items-center justify-start mx-auto relative"
+            className="bg-gray-100 h-8 rounded-full overflow-visible flex items-center justify-start mx-auto relative"
             style={{ width: "67%" }}
             onMouseEnter={() => setHoverLeads(true)}
             onMouseLeave={() => setHoverLeads(false)}
@@ -95,7 +95,7 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
         <div className="w-full flex flex-col items-center">
           <div className="text-sm mb-1">Customers</div>
           <div
-            className="bg-gray-100 h-8 rounded-full overflow-hidden flex items-center justify-start mx-auto relative"
+            className="bg-gray-100 h-8 rounded-full overflow-visible flex items-center justify-start mx-auto relative"
             style={{ width: "44.89%" }}
             onMouseEnter={() => setHoverCustomers(true)}
             onMouseLeave={() => setHoverCustomers(false)}
