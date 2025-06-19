@@ -20,9 +20,8 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
 }) => {
   const fmt = (n: number) => Math.round(n).toLocaleString();
 
-  // proportions for internal split
-  const leadBasePct = baselineLeads / upliftLeads;
-  const custBasePct = baselineCustomers / upliftCustomers;
+  const leadBasePct = upliftLeads > 0 ? baselineLeads / upliftLeads : 0;
+  const custBasePct = upliftCustomers > 0 ? baselineCustomers / upliftCustomers : 0;
 
   return (
     <div className="flex flex-col items-center gap-8 w-full max-w-5xl mx-auto p-6">
@@ -41,7 +40,6 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
           className="bg-gray-100 h-8 rounded-full overflow-hidden flex items-center justify-start mx-auto"
           style={{ width: "67%" }}
         >
-          {/* baseline */}
           <motion.div
             className="bg-gray-300 h-full flex items-center justify-center text-gray-900 text-xs font-semibold"
             style={{ width: `${leadBasePct * 100}%` }}
@@ -51,7 +49,6 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
           >
             {fmt(baselineLeads)}
           </motion.div>
-          {/* uplift (red) */}
           <motion.div
             className="bg-red-600 h-full flex items-center justify-center text-white text-xs font-semibold"
             style={{ width: `${(1 - leadBasePct) * 100}%` }}
@@ -64,14 +61,13 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
         </div>
       </div>
 
-      {/* Customers (67% of Leads = 44.89% of Visitors) */}
+      {/* Customers (45% of Visitors ≈ 67% of Leads) */}
       <div className="w-full flex flex-col items-center">
         <div className="text-sm mb-1">Customers</div>
         <div
           className="bg-gray-100 h-8 rounded-full overflow-hidden flex items-center justify-start mx-auto"
           style={{ width: "44.89%" }}
         >
-          {/* baseline */}
           <motion.div
             className="bg-gray-300 h-full flex items-center justify-center text-gray-900 text-xs font-semibold"
             style={{ width: `${custBasePct * 100}%` }}
@@ -81,7 +77,6 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
           >
             {fmt(baselineCustomers)}
           </motion.div>
-          {/* uplift (red) */}
           <motion.div
             className="bg-red-600 h-full flex items-center justify-center text-white text-xs font-semibold"
             style={{ width: `${(1 - custBasePct) * 100}%` }}
