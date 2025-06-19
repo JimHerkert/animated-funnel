@@ -129,12 +129,13 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
       </div>
 
       {/* Export Button at Bottom */}
-      <button
-        onClick={exportImage}
-        className="mt-4 px-3 py-1 border border-gray-400 text-sm rounded hover:bg-blue-600 hover:text-white"
-      >
-        Export as Image
-      </button>
+     <button
+  onClick={exportImage}
+  className="mt-4 px-3 py-1 border border-black text-sm rounded bg-white text-black hover:bg-[#C8102E] hover:text-white hover:border-[#C8102E] transition-colors"
+>
+  Export as Image
+</button>
+
     </div>
   );
 };
