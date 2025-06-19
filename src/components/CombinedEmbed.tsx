@@ -1,41 +1,82 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import AnimatedFunnel from "./AnimatedFunnel";
 
-const CombinedEmbed: React.FC = () => {
-  // Step 1: Read query params from URL (e.g., for test values)
-  const params = new URLSearchParams(window.location.search);
-  const visitors = parseInt(params.get("visitors") || "5000", 10);
-  const uplift = parseFloat(params.get("uplift") || "15");
-  const mql = parseFloat(params.get("mql") || "4");        // % of visitors who become leads
-  const closeRate = parseFloat(params.get("close") || "10"); // % of leads who become customers
-  const life = parseFloat(params.get("life") || "12");     // months or years depending on toggle
+/** Shape of messages sent from ConvertCalculator */
+interface FunnelMsg {
+  type: "UPDATE_FUNNEL";
+  monthlyVisitors?: number;
+  mql?: number;
+  close?: number;
+  uplift?: number;
+  life?: number;
+}
 
-  const baselineLeads = Math.round((visitors * mql) / 100);
-  const upliftLeads = Math.round(baselineLeads * (1 + uplift / 100));
-  const baselineCustomers = Math.round((baselineLeads * closeRate) / 100);
-  const upliftCustomers = Math.round((upliftLeads * closeRate) / 100);
+const CombinedEmbed: React.FC = () => {
+  /* ---------- STATE fed by postMessage ---------- */
+  const [data, setData] = useState({
+    visitors: 5000,
+    mql: 4,
+    close: 10,
+    uplift: 15,
+    life: 5,
+  });
+
+  /* ---------- Inject calculator script once ---------- */
+  useEffect(() => {
+    const s = document.createElement("script");
+    s.src = "https://scripts.convertcalculator.com/embed.js";
+    s.async = true;
+    document.body.appendChild(s);
+  }, []);
+
+  /* ---------- Listen for postMessage events ---------- */
+  useEffect(() => {
+    const handler = (e: MessageEvent<FunnelMsg>) => {
+      if (e.data?.type === "UPDATE_FUNNEL") {
+        setData((prev) => ({
+          visitors: e.data.monthlyVisitors ?? prev.visitors,
+          mql:      e.data.mql             ?? prev.mql,
+          close:    e.data.close           ?? prev.close,
+          uplift:   e.data.uplift          ?? prev.uplift,
+          life:     e.data.life            ?? prev.life,
+        }));
+      }
+    };
+    window.addEventListener("message", handler);
+    return () => window.removeEventListener("message", handler);
+  }, []);
+
+  /* ---------- Derived funnel numbers ---------- */
+  const baseLeads = data.visitors * (data.mql / 100);
+  const upliftLeads = baseLeads * (1 + data.uplift / 100);
+  const baseCust = baseLeads * (data.close / 100);
+  const upliftCust = baseCust * (1 + data.uplift / 100);
 
   return (
-    <div className="min-h-screen bg-white flex flex-col items-center justify-center p-6">
+    <div className="min-h-screen bg-white flex flex-col items-center p-6">
       <h1 className="text-2xl font-bold mb-6">Calculator + Animated Funnel</h1>
 
       <div className="flex flex-col md:flex-row gap-8 w-full max-w-7xl">
-        {/* ConvertCalculator Embed on Left */}
-        <div className="flex-1">
-          <div className="calculator" data-calc-id="WCFSz5KWq62w2toiB" data-type="framed"></div>
-          <script src="https://scripts.convertcalculator.com/embed.js" async></script>
+        {/* LEFT – ConvertCalculator */}
+        <div className="flex-1 border p-4 rounded shadow overflow-auto">
+          <div
+            className="calculator"
+            data-calc-id="WCFSz5KWq62w2toiB"
+            data-type="framed"
+          ></div>
         </div>
 
-        {/* Animated Funnel on Right */}
-        <div className="flex-1">
+        {/* RIGHT – Live Funnel */}
+        <div className="flex-1 border p-4 rounded shadow">
           <AnimatedFunnel
-            visitors={visitors}
-            uplift={uplift}
-            baselineLeads={baselineLeads}
+            visitors={data.visitors}
+            uplift={data.uplift}
+            baselineLeads={baseLeads}
             upliftLeads={upliftLeads}
-            baselineCustomers={baselineCustomers}
-            upliftCustomers={upliftCustomers}
+            baselineCustomers={baseCust}
+            upliftCustomers={upliftCust}
             suffix="/ mo"
+            usefulLife={data.life}
           />
         </div>
       </div>
