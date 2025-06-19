@@ -14,25 +14,25 @@ const CombinedEmbed: React.FC = () => {
       <h1 className="text-2xl font-bold mb-6">Funnel + Calculator</h1>
 
       <div className="flex flex-col md:flex-row gap-8 w-full max-w-7xl">
-        {/* Animated Funnel via iframe */}
-        <div className="flex-1 border p-4 rounded shadow">
-          <iframe
-            src="https://animated-funnel-1t44.vercel.app"
-            title="Animated Funnel"
-            width="100%"
-            height="500"
-            style={{ border: "none" }}
-            scrolling="no"
-          />
-        </div>
-
-        {/* ConvertCalculator Embed */}
+        {/* ConvertCalculator LEFT */}
         <div className="flex-1 border p-4 rounded shadow">
           <div
             className="calculator"
             data-calc-id="WCFSz5KWq62w2toiB"
             data-type="framed"
           ></div>
+        </div>
+
+        {/* Animated Funnel RIGHT */}
+        <div className="flex-1 border p-4 rounded shadow">
+          <iframe
+            src="https://animated-funnel-1t44.vercel.app"
+            title="Animated Funnel"
+            width="100%"
+            height="600"
+            style={{ border: "none", minHeight: "600px" }}
+            scrolling="no"
+          />
         </div>
       </div>
     </div>
