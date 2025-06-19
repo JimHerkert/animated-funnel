@@ -75,19 +75,19 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
               {fmt(baselineLeads)}
             </motion.div>
             <motion.div
-              className="bg-red-600 h-full flex items-center justify-center text-white text-xs font-semibold relative"
+              className="bg-red-600 h-full flex items-center justify-center text-white text-xs font-semibold"
               style={{ width: `${(1 - leadBasePct) * 100}%` }}
               initial={{ width: 0 }}
               animate={{ width: `${(1 - leadBasePct) * 100}%` }}
               transition={{ type: "spring", stiffness: 120, damping: 20 }}
             >
               +{fmt(upliftLeads - baselineLeads)}
-              {hoverLeads && (
-                <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-red-600 text-xs font-medium">
-                  +{Math.round(uplift)}% uplift
-                </span>
-              )}
             </motion.div>
+            {hoverLeads && (
+              <div className="absolute -top-6 left-1/2 -translate-x-1/2 text-red-600 text-xs font-medium pointer-events-none">
+                +{Math.round(uplift)}% uplift
+              </div>
+            )}
           </div>
         </div>
 
@@ -110,19 +110,19 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
               {fmt(baselineCustomers)}
             </motion.div>
             <motion.div
-              className="bg-red-600 h-full flex items-center justify-center text-white text-xs font-semibold relative"
+              className="bg-red-600 h-full flex items-center justify-center text-white text-xs font-semibold"
               style={{ width: `${(1 - custBasePct) * 100}%` }}
               initial={{ width: 0 }}
               animate={{ width: `${(1 - custBasePct) * 100}%` }}
               transition={{ type: "spring", stiffness: 120, damping: 20, delay: 0.1 }}
             >
               +{fmt(upliftCustomers - baselineCustomers)}
-              {hoverCustomers && (
-                <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-red-600 text-xs font-medium">
-                  +{Math.round(uplift)}% uplift
-                </span>
-              )}
             </motion.div>
+            {hoverCustomers && (
+              <div className="absolute -top-6 left-1/2 -translate-x-1/2 text-red-600 text-xs font-medium pointer-events-none">
+                +{Math.round(uplift)}% uplift
+              </div>
+            )}
           </div>
         </div>
       </div>
