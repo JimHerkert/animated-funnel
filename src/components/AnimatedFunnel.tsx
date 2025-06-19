@@ -22,8 +22,8 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
   const fmt = (n: number) => Math.round(n).toLocaleString();
   const funnelRef = useRef<HTMLDivElement>(null);
 
-  const leadBasePct = baselineLeads / upliftLeads;
-  const custBasePct = baselineCustomers / upliftCustomers;
+  const leadBasePct = upliftLeads > 0 ? baselineLeads / upliftLeads : 0;
+  const custBasePct = upliftCustomers > 0 ? baselineCustomers / upliftCustomers : 0;
 
   const exportAsImage = async () => {
     if (funnelRef.current) {
@@ -60,13 +60,13 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
         <div className="w-full flex flex-col items-center">
           <div className="text-sm mb-1">Leads</div>
           <div
-            className="bg-gray-100 h-8 rounded-full overflow-visible flex items-center justify-start mx-auto relative"
+            className="bg-gray-100 h-8 overflow-visible flex items-center justify-start mx-auto relative"
             style={{ width: "67%" }}
             onMouseEnter={() => setHoverLeads(true)}
             onMouseLeave={() => setHoverLeads(false)}
           >
             <motion.div
-              className="bg-gray-300 h-full flex items-center justify-center text-gray-900 text-xs font-semibold rounded-full"
+              className="bg-gray-300 h-full flex items-center justify-center text-gray-900 text-xs font-semibold rounded-l-full"
               style={{ width: `${leadBasePct * 100}%` }}
               initial={{ width: 0 }}
               animate={{ width: `${leadBasePct * 100}%` }}
@@ -75,7 +75,7 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
               {fmt(baselineLeads)}
             </motion.div>
             <motion.div
-              className="bg-red-600 h-full flex items-center justify-center text-white text-xs font-semibold rounded-full"
+              className="bg-red-600 h-full flex items-center justify-center text-white text-xs font-semibold rounded-r-full"
               style={{ width: `${(1 - leadBasePct) * 100}%` }}
               initial={{ width: 0 }}
               animate={{ width: `${(1 - leadBasePct) * 100}%` }}
@@ -95,13 +95,13 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
         <div className="w-full flex flex-col items-center">
           <div className="text-sm mb-1">Customers</div>
           <div
-            className="bg-gray-100 h-8 rounded-full overflow-visible flex items-center justify-start mx-auto relative"
+            className="bg-gray-100 h-8 overflow-visible flex items-center justify-start mx-auto relative"
             style={{ width: "44.89%" }}
             onMouseEnter={() => setHoverCustomers(true)}
             onMouseLeave={() => setHoverCustomers(false)}
           >
             <motion.div
-              className="bg-gray-300 h-full flex items-center justify-center text-gray-900 text-xs font-semibold"
+              className="bg-gray-300 h-full flex items-center justify-center text-gray-900 text-xs font-semibold rounded-l-full"
               style={{ width: `${custBasePct * 100}%` }}
               initial={{ width: 0 }}
               animate={{ width: `${custBasePct * 100}%` }}
@@ -110,7 +110,7 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
               {fmt(baselineCustomers)}
             </motion.div>
             <motion.div
-              className="bg-red-600 h-full flex items-center justify-center text-white text-xs font-semibold"
+              className="bg-red-600 h-full flex items-center justify-center text-white text-xs font-semibold rounded-r-full"
               style={{ width: `${(1 - custBasePct) * 100}%` }}
               initial={{ width: 0 }}
               animate={{ width: `${(1 - custBasePct) * 100}%` }}
@@ -119,7 +119,7 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
               +{fmt(upliftCustomers - baselineCustomers)}
             </motion.div>
             {hoverCustomers && (
-              <div className="absolute -top-6 left-1/2 -translate-x-1/2 text-red-600 text-xs font-medium pointer-events-none">
+              <div className="absolute -top-10 right-0 text-red-600 text-xs font-medium pointer-events-none bg-white px-1 rounded shadow">
                 +{Math.round(uplift)}% uplift
               </div>
             )}
