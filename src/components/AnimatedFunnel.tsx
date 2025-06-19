@@ -4,8 +4,8 @@ import { motion } from "framer-motion";
 interface FunnelProps {
   visitors: number;
   uplift: number;
-  leadWidth: number;
-  customerWidth: number;
+  leadWidth: number;         // px (67 % of Visitors)
+  customerWidth: number;     // px (67 % of Leads)
   baselineLeads: number;
   upliftLeads: number;
   baselineCustomers: number;
@@ -23,6 +23,10 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
   upliftCustomers,
 }) => {
   const fmt = (n: number) => Math.round(n).toLocaleString();
+
+  // proportions for segmented bars
+  const leadBasePct = baselineLeads / upliftLeads;
+  const custBasePct = baselineCustomers / upliftCustomers;
 
   return (
     <div className="flex flex-col items-center gap-6 w-full max-w-xl mx-auto p-6">
@@ -42,17 +46,19 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
           style={{ width: `${leadWidth}px` }}
         >
           <motion.div
-            className="bg-gray-300 h-full text-gray-900 text-xs font-semibold px-2 flex items-center justify-center"
+            className="bg-gray-300 h-full flex items-center justify-center text-gray-900 text-xs font-semibold px-2"
+            style={{ width: `${leadBasePct * 100}%` }}
             initial={{ width: 0 }}
-            animate={{ width: "100%" }}
+            animate={{ width: `${leadBasePct * 100}%` }}
             transition={{ type: "spring", stiffness: 120, damping: 20 }}
           >
             {fmt(baselineLeads)}
           </motion.div>
           <motion.div
-            className="bg-red-600 h-full text-white text-xs font-semibold px-2 flex items-center justify-center"
+            className="bg-red-600 h-full flex items-center justify-center text-white text-xs font-semibold px-2"
+            style={{ width: `${(1 - leadBasePct) * 100}%` }}
             initial={{ width: 0 }}
-            animate={{ width: "100%" }}
+            animate={{ width: `${(1 - leadBasePct) * 100}%` }}
             transition={{ type: "spring", stiffness: 120, damping: 20 }}
           >
             +{fmt(upliftLeads - baselineLeads)}
@@ -68,17 +74,19 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
           style={{ width: `${customerWidth}px` }}
         >
           <motion.div
-            className="bg-gray-300 h-full text-gray-900 text-xs font-semibold px-2 flex items-center justify-center"
+            className="bg-gray-300 h-full flex items-center justify-center text-gray-900 text-xs font-semibold px-2"
+            style={{ width: `${custBasePct * 100}%` }}
             initial={{ width: 0 }}
-            animate={{ width: "100%" }}
+            animate={{ width: `${custBasePct * 100}%` }}
             transition={{ type: "spring", stiffness: 120, damping: 20, delay: 0.1 }}
           >
             {fmt(baselineCustomers)}
           </motion.div>
           <motion.div
-            className="bg-green-600 h-full text-white text-xs font-semibold px-2 flex items-center justify-center"
+            className="bg-green-600 h-full flex items-center justify-center text-white text-xs font-semibold px-2"
+            style={{ width: `${(1 - custBasePct) * 100}%` }}
             initial={{ width: 0 }}
-            animate={{ width: "100%" }}
+            animate={{ width: `${(1 - custBasePct) * 100}%` }}
             transition={{ type: "spring", stiffness: 120, damping: 20, delay: 0.1 }}
           >
             +{fmt(upliftCustomers - baselineCustomers)}
