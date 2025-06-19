@@ -1,37 +1,47 @@
-// src/App.tsx
 import React, { useEffect, useState } from "react";
 import AnimatedFunnel from "./components/AnimatedFunnel";
 
 const App: React.FC = () => {
-  const [visitors, setVisitors] = useState(5000);
-  const [mqlRate, setMqlRate] = useState(4); // %
-  const [customerRate, setCustomerRate] = useState(10); // %
-  const [uplift, setUplift] = useState(15); // %
-  const [life, setLife] = useState(12); // months
+  const [data, setData] = useState({
+    visitors: 0,
+    uplift: 0,
+    mqlRate: 0,
+    customerRate: 0,
+    life: 3,
+  });
 
   useEffect(() => {
-    const handleMessage = (event: MessageEvent) => {
-      if (event.data?.type === "UPDATE_FUNNEL") {
-        setVisitors(event.data.monthlyVisitors || 0);
-        setMqlRate(event.data.mql || 0);
-        setCustomerRate(event.data.close || 0);
-        setUplift(event.data.uplift || 0);
-        setLife(event.data.life || 0);
-        console.log("📥 Received from CC:", event.data);
-      }
+    const receiveMessage = (event: MessageEvent) => {
+      if (typeof event.data !== "object") return;
+
+      const {
+        QMNTHLYWEBVISITORS,
+        QSCRIBEFFECT,
+        QMQLRATE,
+        QCUSTCONV,
+        QUSEFULELIFE,
+      } = event.data;
+
+      setData({
+        visitors: parseFloat(QMNTHLYWEBVISITORS) || 0,
+        uplift: parseFloat(QSCRIBEFFECT) || 0,
+        mqlRate: parseFloat(QMQLRATE) || 0,
+        customerRate: parseFloat(QCUSTCONV) || 0,
+        life: parseFloat(QUSEFULELIFE) || 3,
+      });
     };
 
-    window.addEventListener("message", handleMessage);
-    return () => window.removeEventListener("message", handleMessage);
+    window.addEventListener("message", receiveMessage);
+    return () => window.removeEventListener("message", receiveMessage);
   }, []);
 
   return (
     <AnimatedFunnel
-      visitors={visitors}
-      uplift={uplift}
-      mqlRate={mqlRate}
-      customerRate={customerRate}
-      life={life}
+      visitors={data.visitors}
+      uplift={data.uplift}
+      mqlRate={data.mqlRate}
+      customerRate={data.customerRate}
+      life={data.life}
     />
   );
 };
