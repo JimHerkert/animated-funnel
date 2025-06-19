@@ -9,6 +9,7 @@ interface FunnelProps {
   upliftLeads: number;
   baselineCustomers: number;
   upliftCustomers: number;
+  suffix: string;
 }
 
 const AnimatedFunnel: React.FC<FunnelProps> = ({
@@ -18,53 +19,52 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
   upliftLeads,
   baselineCustomers,
   upliftCustomers,
+  suffix,
 }) => {
   const fmt = (n: number) => Math.round(n).toLocaleString();
   const funnelRef = useRef<HTMLDivElement>(null);
 
-  // % splits inside each bar
   const leadBasePct = upliftLeads > 0 ? baselineLeads / upliftLeads : 0;
   const custBasePct = upliftCustomers > 0 ? baselineCustomers / upliftCustomers : 0;
 
-  // Image export helper
-  const exportAsImage = async () => {
+  // hover state
+  const [hoverLeads, setHoverLeads] = useState(false);
+  const [hoverCust, setHoverCust]   = useState(false);
+
+  // export helper
+  const exportImage = async () => {
     if (funnelRef.current) {
       const canvas = await html2canvas(funnelRef.current);
-      const link = document.createElement("a");
-      link.download = "funnel.png";
-      link.href = canvas.toDataURL();
-      link.click();
+      const a = document.createElement("a");
+      a.download = "funnel.png";
+      a.href = canvas.toDataURL();
+      a.click();
     }
   };
 
-  // Hover state
-  const [hoverLeads, setHoverLeads] = useState(false);
-  const [hoverCustomers, setHoverCustomers] = useState(false);
-
   return (
     <div className="flex flex-col items-center gap-8 w-full max-w-5xl mx-auto p-6">
-      {/* Export button */}
       <button
-        onClick={exportAsImage}
         className="mb-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+        onClick={exportImage}
       >
         Export as Image
       </button>
 
       <div ref={funnelRef} className="flex flex-col items-center gap-8 w-full">
-        {/* Visitors (100 %) */}
+        {/* Visitors */}
         <div className="w-full flex flex-col items-center">
-          <div className="text-sm mb-1">Visitors</div>
+          <div className="text-sm mb-1">{`Visitors ${suffix}`}</div>
           <div className="bg-gray-200 h-8 w-full rounded-full flex items-center justify-center text-xs font-semibold">
-            {fmt(visitors)} / mo
+            {fmt(visitors)}
           </div>
         </div>
 
-        {/* Leads (67 % of Visitors) */}
+        {/* Leads */}
         <div className="w-full flex flex-col items-center">
-          <div className="text-sm mb-1">Leads</div>
+          <div className="text-sm mb-1">{`Leads ${suffix}`}</div>
           <div
-            className="bg-gray-100 h-8 overflow-visible flex items-center relative mx-auto"
+            className="bg-gray-100 h-8 overflow-visible flex relative mx-auto"
             style={{ width: "67%" }}
             onMouseEnter={() => setHoverLeads(true)}
             onMouseLeave={() => setHoverLeads(false)}
@@ -90,23 +90,22 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
               +{fmt(upliftLeads - baselineLeads)}
             </motion.div>
 
-            {/* Tooltip */}
             {hoverLeads && (
-              <div className="absolute -top-10 right-0 text-red-600 text-xs font-medium pointer-events-none bg-white px-1 rounded shadow">
+              <div className="absolute -top-10 right-0 bg-white px-1 rounded shadow text-red-600 text-xs pointer-events-none">
                 +{Math.round(uplift)}% Scribology Effect
               </div>
             )}
           </div>
         </div>
 
-        {/* Customers (≈45 % of Visitors) */}
+        {/* Customers */}
         <div className="w-full flex flex-col items-center">
-          <div className="text-sm mb-1">Customers</div>
+          <div className="text-sm mb-1">{`Customers ${suffix}`}</div>
           <div
-            className="bg-gray-100 h-8 overflow-visible flex items-center relative mx-auto"
+            className="bg-gray-100 h-8 overflow-visible flex relative mx-auto"
             style={{ width: "44.89%" }}
-            onMouseEnter={() => setHoverCustomers(true)}
-            onMouseLeave={() => setHoverCustomers(false)}
+            onMouseEnter={() => setHoverCust(true)}
+            onMouseLeave={() => setHoverCust(false)}
           >
             {/* baseline */}
             <motion.div
@@ -129,9 +128,8 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
               +{fmt(upliftCustomers - baselineCustomers)}
             </motion.div>
 
-            {/* Tooltip */}
-            {hoverCustomers && (
-              <div className="absolute -top-10 right-0 text-red-600 text-xs font-medium pointer-events-none bg-white px-1 rounded shadow">
+            {hoverCust && (
+              <div className="absolute -top-10 right-0 bg-white px-1 rounded shadow text-red-600 text-xs pointer-events-none">
                 +{Math.round(uplift)}% Scribology Effect
               </div>
             )}
