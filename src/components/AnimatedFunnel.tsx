@@ -57,11 +57,11 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
         <div className="w-full flex flex-col items-center">
           <div className="text-sm mb-1">Leads</div>
           <div
-            className="bg-gray-100 h-8 rounded-full overflow-hidden flex items-center justify-start mx-auto group"
+            className="bg-gray-100 h-8 rounded-full overflow-hidden flex items-center justify-start mx-auto relative"
             style={{ width: "67%" }}
           >
             <motion.div
-              className="bg-gray-300 h-full flex items-center justify-center text-gray-900 text-xs font-semibold relative"
+              className="bg-gray-300 h-full flex items-center justify-center text-gray-900 text-xs font-semibold"
               style={{ width: `${leadBasePct * 100}%` }}
               initial={{ width: 0 }}
               animate={{ width: `${leadBasePct * 100}%` }}
@@ -70,14 +70,14 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
               {fmt(baselineLeads)}
             </motion.div>
             <motion.div
-              className="bg-red-600 h-full flex items-center justify-center text-white text-xs font-semibold relative group-hover:opacity-100"
+              className="bg-red-600 h-full flex items-center justify-center text-white text-xs font-semibold relative"
               style={{ width: `${(1 - leadBasePct) * 100}%` }}
               initial={{ width: 0 }}
               animate={{ width: `${(1 - leadBasePct) * 100}%` }}
               transition={{ type: "spring", stiffness: 120, damping: 20 }}
             >
               +{fmt(upliftLeads - baselineLeads)}
-              <span className="absolute -top-6 text-red-600 text-xs font-medium hidden group-hover:block">
+              <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-red-600 text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity">
                 +{Math.round(uplift)}% uplift
               </span>
             </motion.div>
@@ -88,11 +88,11 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
         <div className="w-full flex flex-col items-center">
           <div className="text-sm mb-1">Customers</div>
           <div
-            className="bg-gray-100 h-8 rounded-full overflow-hidden flex items-center justify-start mx-auto group"
+            className="bg-gray-100 h-8 rounded-full overflow-hidden flex items-center justify-start mx-auto relative"
             style={{ width: "44.89%" }}
           >
             <motion.div
-              className="bg-gray-300 h-full flex items-center justify-center text-gray-900 text-xs font-semibold relative"
+              className="bg-gray-300 h-full flex items-center justify-center text-gray-900 text-xs font-semibold"
               style={{ width: `${custBasePct * 100}%` }}
               initial={{ width: 0 }}
               animate={{ width: `${custBasePct * 100}%` }}
@@ -101,14 +101,14 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
               {fmt(baselineCustomers)}
             </motion.div>
             <motion.div
-              className="bg-red-600 h-full flex items-center justify-center text-white text-xs font-semibold relative group-hover:opacity-100"
+              className="bg-red-600 h-full flex items-center justify-center text-white text-xs font-semibold relative"
               style={{ width: `${(1 - custBasePct) * 100}%` }}
               initial={{ width: 0 }}
               animate={{ width: `${(1 - custBasePct) * 100}%` }}
               transition={{ type: "spring", stiffness: 120, damping: 20, delay: 0.1 }}
             >
               +{fmt(upliftCustomers - baselineCustomers)}
-              <span className="absolute -top-6 text-red-600 text-xs font-medium hidden group-hover:block">
+              <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-red-600 text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity">
                 +{Math.round(uplift)}% uplift
               </span>
             </motion.div>
