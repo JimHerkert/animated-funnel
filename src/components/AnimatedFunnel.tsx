@@ -3,15 +3,9 @@ import { motion } from "framer-motion";
 
 interface FunnelProps {
   visitors: number;
-
-  // uplift percentages
   uplift: number;
-
-  // pre-computed widths (px) sent from App.tsx
   leadWidth: number;
   customerWidth: number;
-
-  // counts for labels
   baselineLeads: number;
   upliftLeads: number;
   baselineCustomers: number;
@@ -32,7 +26,7 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
 
   return (
     <div className="flex flex-col items-center gap-6 w-full max-w-xl mx-auto p-6">
-      {/* Visitors (100 % width) */}
+      {/* Visitors */}
       <div className="w-full flex flex-col items-center">
         <div className="text-sm mb-1">Visitors</div>
         <div className="bg-gray-200 h-8 w-full rounded-full flex items-center justify-center text-xs font-semibold">
@@ -40,25 +34,23 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
         </div>
       </div>
 
-      {/* Leads (67 % width) */}
+      {/* Leads */}
       <div className="flex flex-col items-center">
         <div className="text-sm mb-1">Leads</div>
         <div
           className="bg-gray-100 h-8 rounded-full overflow-hidden flex items-center"
           style={{ width: `${leadWidth}px` }}
         >
-          {/* baseline */}
           <motion.div
-            className="bg-gray-300 h-full flex items-center justify-center text-gray-900 text-xs font-semibold px-2"
+            className="bg-gray-300 h-full text-gray-900 text-xs font-semibold px-2 flex items-center justify-center"
             initial={{ width: 0 }}
             animate={{ width: "100%" }}
             transition={{ type: "spring", stiffness: 120, damping: 20 }}
           >
             {fmt(baselineLeads)}
           </motion.div>
-          {/* uplift */}
           <motion.div
-            className="bg-red-600 h-full flex items-center justify-center text-white text-xs font-semibold px-2"
+            className="bg-red-600 h-full text-white text-xs font-semibold px-2 flex items-center justify-center"
             initial={{ width: 0 }}
             animate={{ width: "100%" }}
             transition={{ type: "spring", stiffness: 120, damping: 20 }}
@@ -68,25 +60,23 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
         </div>
       </div>
 
-      {/* Customers (67 % of Leads) */}
+      {/* Customers */}
       <div className="flex flex-col items-center">
         <div className="text-sm mb-1">Customers</div>
         <div
           className="bg-gray-100 h-8 rounded-full overflow-hidden flex items-center"
           style={{ width: `${customerWidth}px` }}
         >
-          {/* baseline */}
           <motion.div
-            className="bg-gray-300 h-full flex items-center justify-center text-gray-900 text-xs font-semibold px-2"
+            className="bg-gray-300 h-full text-gray-900 text-xs font-semibold px-2 flex items-center justify-center"
             initial={{ width: 0 }}
             animate={{ width: "100%" }}
             transition={{ type: "spring", stiffness: 120, damping: 20, delay: 0.1 }}
           >
             {fmt(baselineCustomers)}
           </motion.div>
-          {/* uplift */}
           <motion.div
-            className="bg-green-600 h-full flex items-center justify-center text-white text-xs font-semibold px-2"
+            className="bg-green-600 h-full text-white text-xs font-semibold px-2 flex items-center justify-center"
             initial={{ width: 0 }}
             animate={{ width: "100%" }}
             transition={{ type: "spring", stiffness: 120, damping: 20, delay: 0.1 }}
