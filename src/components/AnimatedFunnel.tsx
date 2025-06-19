@@ -108,14 +108,13 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
               +{fmt(scaled.upliftLeads - scaled.baseLeads)}
             </motion.div>
 {hoverLeads && (
-  <div
-    className="absolute -top-10 text-red-600 text-xs font-medium pointer-events-none bg-white px-2 py-1 rounded shadow"
-    style={{ left: `${leadBasePct * 100}%` }}
-  >
-    +{Math.round(uplift)}% Scribology Effect
-  </div>
+<div
+  className="absolute -top-10 text-red-600 text-xs font-medium pointer-events-none bg-white px-2 py-1 rounded shadow whitespace-normal text-center"
+  style={{ left: `${leadBasePct * 100}%`, maxWidth: "160px" }}
+>
+  +{Math.round(uplift)}% Scribology Effect
+</div>
 )}
-
           </div>
         </div>
 
@@ -148,11 +147,12 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
             </motion.div>
            {hoverCustomers && (
   <div
-    className="absolute -top-10 text-red-600 text-xs font-medium pointer-events-none bg-white px-2 py-1 rounded shadow"
-    style={{ left: `${custBasePct * 100}%` }}
-  >
-    +{Math.round(uplift)}% Scribology Effect
-  </div>
+  className="absolute -top-10 text-red-600 text-xs font-medium pointer-events-none bg-white px-2 py-1 rounded shadow whitespace-normal text-center"
+  style={{ left: `${custBasePct * 100}%`, maxWidth: "160px" }}
+>
+  +{Math.round(uplift)}% Scribology Effect
+</div>
+
 )}
           </div>
         </div>
