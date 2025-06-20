@@ -3,10 +3,10 @@ import AnimatedFunnel from "./components/AnimatedFunnel";
 
 const App: React.FC = () => {
   const [data, setData] = useState({
-    visitors: 0,
-    uplift: 0,
-    mqlRate: 0,
-    customerRate: 0,
+    visitors: 5000,
+    uplift: 10,
+    mqlRate: 10,
+    customerRate: 10,
     life: 3,
   });
 

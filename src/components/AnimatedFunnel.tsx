@@ -21,7 +21,7 @@ const AnimatedFunnel: React.FC<FunnelProps> = ({
   // Life multiplier
   const multiplier = suffix === "/ mo" ? 1 : suffix === "/ yr" ? 12 : 12 * life;
 
-  // Adjusted input
+  // Adjusted input  
   const adjustedVisitors = visitors * multiplier;
 
   // MQLs and Customers (base and uplifted)
